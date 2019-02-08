@@ -1,5 +1,5 @@
 
-# Tony Quertier - Project Continuous control
+# Tony Quertier - Project 2 Continuous control
 
 
 ## Examine the State and Action Spaces
