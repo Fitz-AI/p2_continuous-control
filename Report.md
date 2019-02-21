@@ -21,7 +21,7 @@ In order to do better exploration, an exploration policy μ’ is constructed by
 
 In addition, DDPG does soft update on the parameters of both actor and critic, with τ≪1: θ′←τθ+(1−τ)θ′. In this way, the target network values are constrained to change slowly, different from the design in DQN that the target network stays frozen for some period of time.
 
-### Hyper parameters
+### Hyper parameters for V1
 
 BUFFER_SIZE = int(1e6)  
 BATCH_SIZE = 128        
@@ -31,12 +31,29 @@ LR_ACTOR = 1e-4
 LR_CRITIC = 1e-4        
 WEIGHT_DECAY = 0.0   
 
-### Neural Networks
+### Hyper parameters for V2
+
+BUFFER_SIZE = int(1e6)  
+BATCH_SIZE = 64        
+GAMMA = 099           
+TAU = 1e-3              
+LR_ACTOR = 1e-3         
+LR_CRITIC = 1e-3        
+WEIGHT_DECAY = 0.0  
+
+### Neural Networks for V1
 
 Actor and Critic network models were defined in model.py.
 
 The Actor networks utilised two fully connected layers with 256 and 128 units with relu activation and tanh activation for the action space. 
-The Critic networks utilised two fully connected layers with 256 and 128 units with leaky_relu activation. 
+The Critic networks utilised two fully connected layers with 256 and 128 units with relu activation. 
+
+### Neural Networks for V2
+
+Actor and Critic network models were defined in model.py.
+
+The Actor networks utilised two fully connected layers with 200 and 400 units with relu activation and tanh activation for the action space. 
+The Critic networks utilised two fully connected layers with 200 and 400 units with relu activation. 
 
 ### Number of agents
 
@@ -46,8 +63,13 @@ In Continuous_control_V1 we use only one agent and in Continuous_Control_V2 we u
 
 ## Performance of the agent
 
+For V1, we have :
+
 ![Alt text](https://github.com/Quertier/p2_continuous-control/blob/master/p2_continuous_control_V1.PNG)
 
+For V2, we have :
+
+![Alt text](https://github.com/Quertier/p2_continuous-control/blob/master/p2_continuous_control_V2.PNG)
 
 
 ## Future Improvements
