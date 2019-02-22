@@ -35,7 +35,7 @@ WEIGHT_DECAY = 0.0
 
 BUFFER_SIZE = int(1e6)  
 BATCH_SIZE = 64        
-GAMMA = 099           
+GAMMA = 0.99           
 TAU = 1e-3              
 LR_ACTOR = 1e-3         
 LR_CRITIC = 1e-3        
