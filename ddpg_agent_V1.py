@@ -3,23 +3,25 @@ import random
 import copy
 from collections import namedtuple, deque
 
-from model import Actor, Critic
+from model_V1 import Actor, Critic
 
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 128 # minibatch size
-GAMMA = 0.97            # discount factor
+BATCH_SIZE = 1024 # minibatch size
+GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 1e-4         # learning rate of the actor 
-LR_CRITIC = 1e-4        # learning rate of the critic
+LR_ACTOR = 1e-3         # learning rate of the actor 
+LR_CRITIC = 1e-3        # learning rate of the critic
 WEIGHT_DECAY = 0.0  # L2 weight decay
+
+EPSILON = 1.0 
+EPSILON_DECAY = 1e-6
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 dtype = torch.cuda.FloatTensor
-cudnn.benchmark = True
 
 class Agent():
     """Interacts with and learns from the environment."""
@@ -36,6 +38,7 @@ class Agent():
         self.state_size = state_size
         self.action_size = action_size
         self.seed = random.seed(random_seed)
+        self.epsilon = EPSILON
 
         # Actor Network (w/ Target Network)
         self.actor_local = Actor(state_size, action_size, random_seed).type(dtype)
@@ -65,13 +68,13 @@ class Agent():
 
     def act(self, state, add_noise=True):
         """Returns actions for given state as per current policy."""
-        state = torch.from_numpy(state).float().type(dtype)
+        state = torch.from_numpy(state).float().to(device)
         self.actor_local.eval()
         with torch.no_grad():
-            action = self.actor_local(state).cpu().data.numpy()
+            action = self.actor_local(state[None, ...]).cpu().data.numpy()
         self.actor_local.train()
         if add_noise:
-            action += self.noise.sample()
+            action += self.epsilon * self.noise.sample()
         return np.clip(action, -1, 1)
 
     def reset(self):
@@ -117,7 +120,11 @@ class Agent():
 
         # ----------------------- update target networks ----------------------- #
         self.soft_update(self.critic_local, self.critic_target, TAU)
-        self.soft_update(self.actor_local, self.actor_target, TAU)                     
+        self.soft_update(self.actor_local, self.actor_target, TAU)
+        
+        # ---------------------update epsilon --------------------------------#
+        self.epsilon -= EPSILON_DECAY
+        self.noise.reset()
 
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
