@@ -14,7 +14,7 @@ The observation space consists of 33 variables corresponding to position, rotati
 
 ### Algorithm
 
-To train the agent, we use the ddpg algorithm form DDPG_continuous_control notebook. 
+To train the agent, we use the ddpg algorithm from DDPG_continuous_control notebook. 
 DDPG (Lillicrap, et al., 2015), short for Deep Deterministic Policy Gradient, is a model-free off-policy actor-critic algorithm, combining DPG with DQN.The original DQN works in discrete space, and DDPG extends it to continuous space with the actor-critic framework while learning a deterministic policy.
 
 In order to do better exploration, an exploration policy μ’ is constructed by adding noise N :μ′(s)=μθ(s)+N.
